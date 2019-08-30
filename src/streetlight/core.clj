@@ -53,7 +53,7 @@
   [m & ks]
   (path-search m #(some (set ks) %)))
 
-(defn p "Prints newline delimited values." [& m]
+(defn p "Prints newline delimited collections." [& m]
   (doseq [item m]
     (doseq [line item] (println line))
     (println "")))
@@ -69,10 +69,23 @@
      m)
     @*out))
 
+(defn- remove-duplicate-vectors
+  "[{:a 1} [:a 1] :not-touched]
+   ;;; => [[:a 1] :not-touched]"
+  [items]
+  (let [item-set (set items)
+        kill-set (set (filter (fn [x]
+                                (and (coll? x)
+                                     (vector? x)
+                                     (= 2 (count x))
+                                     (item-set (apply hash-map x))))
+                              items))]
+    (remove kill-set items)))
+
 (defn co-relate
   ([m1 m2] (co-relate m1 m2 vector?))
   ([m1 m2 remove-fn]
    (->> (set/intersection (explode m1) (explode m2))
+        (remove-duplicate-vectors)
         (sort-by (comp count str))
-        (remove remove-fn)
         vec)))

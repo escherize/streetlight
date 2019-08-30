@@ -1,5 +1,5 @@
-(defproject streetlight "0.1.0"
-  :description "Tools to throw light on deep and dark datastructures"
+(defproject streetlight "0.1.1"
+  :description "Tools to throw light onto deep and dark datastructures"
   :url "http://github.com/escherize/streetlight"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
