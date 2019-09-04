@@ -14,12 +14,13 @@
 
                                :else ::m-or-coll-not-map-or-collection))
           (children [node]
-            (let [v (->map (get-in m node))]
+            (let [v (get-in (->map m) node)]
               (if (map? v)
                 (map (fn [x] (conj node x)) (keys v))
                 [])))
           (branch? [node] (-> (children node) seq boolean))]
     (->> m
+         ;; TODO: realize lazy sequences here
          ->map
          keys
          (map vector)
@@ -55,7 +56,7 @@
 
 (defn p "Prints newline delimited collections." [& m]
   (doseq [item m]
-    (doseq [line item] (println line))
+    (doseq [line item] (prn line))
     (println "")))
 
 (defn explode
@@ -83,9 +84,9 @@
     (remove kill-set items)))
 
 (defn co-relate
-  ([m1 m2] (co-relate m1 m2 vector?))
-  ([m1 m2 remove-fn]
-   (->> (set/intersection (explode m1) (explode m2))
+  ([& ms]
+   (->> (mapv explode ms)
+    (apply set/intersection)
         (remove-duplicate-vectors)
         (sort-by (comp count str))
         vec)))
